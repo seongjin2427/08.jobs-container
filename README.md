@@ -83,7 +83,7 @@
 
 <br>
 
-3. 격리된 컨테이너를 사용하지 않고, GitHub Actions에서 제공하는 기본 러너에서도 서비스 컨테이너 사용이 가능합니다. - 
+3. 격리된 컨테이너를 사용하지 않고, GitHub Actions에서 제공하는 기본 러너에서도 서비스 컨테이너 사용이 가능합니다. - [`18ed1f71`](https://github.com/seongjin2427/08.jobs-container/commit/18ed1f7149fd3ffa065a41df442fb0f138f4088d)
 
 - Process
   - `deploy.yml`
@@ -121,3 +121,6 @@
               MONGO_INITDB_ROOT_PASSWORD: example
         steps:
           ...
+
+- Result
+  - 격리된 컨테이너 환경에서 실행하지 않고도 서비스 컨테이너를 생성하여 서비스 컨테이너 내부에서 생성된 MongoDB 내부 포트 27017과 연결 및 테스트를 통과할 수 있습니다.
