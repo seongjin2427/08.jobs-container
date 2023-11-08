@@ -11,27 +11,30 @@ jobs:
   test:
     environment: testing
     runs-on: ubuntu-latest
-    container: 
-      image: node:16
+    # 만약 test Job의 이 컨테이너가 동작하지 않는다면
+    # 컨테이너 내부에서 Step들을 실행하는 것이 아니라
+    # GitHub Actions에서 제공한 기본 러너를 사용할 겁니다.
+    # container: 
+    #   image: node:16
     env:
+      # 하지만 자동으로 생성되는 네트워크는 사용할 수 없기 때문에
       MONGODB_CONNECTION_PROTOCOL: mongodb
-      # 외부에 추가적인 MongoDB 클러스터를 만들지 않고도 MongoDB를 사용할 수 있습니다.
-      # GitHub Actions가 자동으로 네트워크 환경을 생성하기 때문에
-      # services에서 지정한 서비스 컨테이너의 label(mongo)을 바로 지정하여 사용할 수 있습니다.
-      MONGODB_CLUSTER_ADDRESS: mongodb
-      # 서비스 컨테이너에 사용할 username과 password와 동일하게 지정하면 됩니다.
+      # 로컬 호스트 IP와 연결할 특정 포트를 지정해야 합니다.
+      # (mongoDB의 기본 포트는 27017입니다.)ㄴ
+      # mongodb -> 127.0.0.1:27017
+      MONGODB_CLUSTER_ADDRESS: 127.0.0.1:27017
       MONGODB_USERNAME: root
       MONGODB_PASSWORD: example
       PORT: 8080
-    # Job 기준으로 서비스 컨테이너를 활용할 수 있습니다.
+    # 그렇더라도 서비스 컨테이너는 여전히 사용 가능합니다.
     services: 
-      # 서비스 컨테이너를 식별하기 위한 label을 원하는대로 지정할 수 있습니다.
       mongodb: 
-        # image 키는 반드시 필요합니다. 사용해야 할 이미지명을 지정할 수 있습니다.
         image: mongo
-        env: 
-          # mongo 도커 이미지 공식 문서에서 확인할 수 있는 환경 변수 두 가지를 기입합니다.
-          # test Job이 동작하는 동안에만 사용되는 서버로, 환경 변수 값은 원하는대로 설정하면 됩니다.
+        # 연결할 포트를 설정해야 합니다.
+        # 서비스 컨테이너의 내부 포트번호:러너에 포워딩할 포트번호
+        ports:
+          - 27017:27017
+        env:
           MONGO_INITDB_ROOT_USERNAME: root
           MONGO_INITDB_ROOT_PASSWORD: example
     steps:

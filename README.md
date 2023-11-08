@@ -80,3 +80,44 @@
 
 - Result
   - `test` Job의 서비스 컨테이너에서 필요한 MongoDB를 실행하여 테스트가 정상적으로 통과합니다.
+
+<br>
+
+3. 격리된 컨테이너를 사용하지 않고, GitHub Actions에서 제공하는 기본 러너에서도 서비스 컨테이너 사용이 가능합니다. - 
+
+- Process
+  - `deploy.yml`
+    - ```yml
+      ...
+      jobs:
+        test:
+          environment: testing
+          runs-on: ubuntu-latest
+          # 만약 test Job의 이 컨테이너가 동작하지 않는다면
+          # 컨테이너 내부에서 Step들을 실행하는 것이 아니라
+          # GitHub Actions에서 제공한 기본 러너를 사용할 겁니다.
+          # container: 
+          #   image: node:16
+        env:
+          # 하지만 자동으로 생성되는 네트워크는 사용할 수 없기 때문에
+          MONGODB_CONNECTION_PROTOCOL: mongodb
+          # 로컬 호스트 IP와 연결할 특정 포트를 지정해야 합니다.
+          # (mongoDB의 기본 포트는 27017입니다.)
+          # mongodb -> 127.0.0.1:27017
+          MONGODB_CLUSTER_ADDRESS: 127.0.0.1:27017
+          MONGODB_USERNAME: root
+          MONGODB_PASSWORD: example
+          PORT: 8080
+        # 그렇더라도 서비스 컨테이너는 여전히 사용 가능합니다.
+        services: 
+          mongodb: 
+            image: mongo
+            # 연결할 포트를 설정해야 합니다.
+            # 서비스 컨테이너의 내부 포트번호:러너에 포워딩할 포트번호
+            ports:
+              - 27017:27017
+            env:
+              MONGO_INITDB_ROOT_USERNAME: root
+              MONGO_INITDB_ROOT_PASSWORD: example
+        steps:
+          ...
