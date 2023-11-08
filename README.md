@@ -41,7 +41,7 @@
 
 <br>
 
-2. 별도의 MongoDB 클러스터를 생성하는 것 없이, 격리된 서비스 컨테이너로부터 MongoDB를 사용할 수 있습니다.
+2. 별도의 MongoDB 클러스터를 생성하는 것 없이, 격리된 서비스 컨테이너로부터 MongoDB를 사용할 수 있습니다. - [`019ba6ab`](https://github.com/seongjin2427/08.jobs-container/commit/019ba6ab4b2ec81c4bc9219cbe9900474c13fff5)
 
 - Process
   - `deploy.yml`
@@ -77,3 +77,6 @@
               MONGO_INITDB_ROOT_PASSWORD: example
       steps:
         ...
+
+- Result
+  - `test` Job의 서비스 컨테이너에서 필요한 MongoDB를 실행하여 테스트가 정상적으로 통과합니다.
